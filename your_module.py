@@ -1,13 +1,16 @@
+# your_module.py
+
 import requests
 import json
+import os
 from pathlib import Path
 from web3.auto import w3
 
-# Pinata API headers (keep secrets directly in the code for this example)
+# Pinata API headers (make sure to replace your API keys with real ones if needed)
 headers = {
     "Content-Type": "application/json",
-    "pinata_api_key": "068352793a74c64dadef",  # Your Pinata API key
-    "pinata_secret_api_key": "3b7ce5e9afee74610b2be9035cf8e765fa877924aaf4c5072722c84bc5a546a7",  # Your Pinata Secret API key
+    "pinata_api_key": os.getenv("b83cf23cbdaadec6f3be"),
+    "pinata_secret_api_key": os.getenv("53ffd88879299850fd52782081a9f89dc75bffcf6c90b48ef3aceba161907ebc"),
 }
 
 def initContract():
@@ -18,8 +21,6 @@ def initContract():
         # Load ABI from a JSON file
         with open(Path("KYC.json")) as json_file:
             abi = json.load(json_file)
-        
-        # Hardcoded contract address (your KYC smart contract address)
         contract_address = "0x8c70021953647d6469d3bc999C76249D7093e069"
         if not contract_address:
             raise ValueError("KYC_ADDRESS is not set in the environment variables.")
@@ -48,7 +49,7 @@ def convertDataToJSON(first_name, last_name, dob, email, nationality, occupation
                 "occupation": occupation,
                 "annual_income": annual_income,
                 "image": image,
-            },
+            },  
         }
         return json.dumps(data)
     except Exception as e:
@@ -59,10 +60,6 @@ def pinJSONtoIPFS(json_data):
     Pin a JSON object to IPFS using Pinata's API and return the IPFS URI.
     """
     try:
-        # Ensure json_data is a string (if it's not already)
-        if isinstance(json_data, dict):
-            json_data = json.dumps(json_data)
-        
         response = requests.post(
             "https://api.pinata.cloud/pinning/pinJSONToIPFS", 
             data=json_data, 
